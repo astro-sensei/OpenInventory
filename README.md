@@ -4,8 +4,6 @@
 Cette application Python permet à une petite entreprise de gérer l’ensemble de son inventaire, ses ventes, ses fournisseurs, ses alertes de stock faible et l’import/export de données au format Excel.
 Elle propose deux modes d’utilisation : une interface console et une interface graphique Tkinter.
 
-Toutes les fonctionnalités obligatoires et toutes les extensions sont intégrées.
-
 ---
 
 ## Fonctionnalités
