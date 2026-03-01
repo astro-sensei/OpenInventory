@@ -2,7 +2,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.13-blue?logo=python)
 ![License](https://img.shields.io/badge/License-MIT-green)
-![Version](https://img.shields.io/badge/Version-1.0.0-orange)
+![Version](https://img.shields.io/badge/Version-0.1.0-orange)
 ![Status](https://img.shields.io/badge/Status-Stable-brightgreen)
 
 > Application de gestion des stocks pour petites entreprises — Interface graphique Tkinter, persistance JSON, export Excel.
