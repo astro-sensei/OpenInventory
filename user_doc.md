@@ -1,138 +1,177 @@
-# Guide Utilisateur — OpenInventory v1.0.0
-
-## Lancement de l'application
-
-```bash
-python main.py
-```
-
-La fenêtre principale s'ouvre avec quatre onglets : **Produits**, **Ventes**, **Rapports**, **Fournisseurs**.
+# Guide Utilisateur — OpenInventory v1.1.0
 
 ---
 
-## Onglet Produits
+## Connexion
+
+Au lancement, une fenêtre de connexion s'affiche.
+
+| Champ | Description |
+|---|---|
+| Utilisateur | Votre nom d'utilisateur |
+| Mot de passe | Votre mot de passe |
+
+Appuyez sur **Connexion** ou sur la touche **Entrée** pour vous connecter.
+
+**Comptes par défaut :**
+
+| Utilisateur | Mot de passe | Accès |
+|---|---|---|
+| admin | admin | Complet |
+| viewer | viewer | Lecture seule |
+
+> ⚠️ Changez le mot de passe `admin` dès la première connexion via l'onglet **Utilisateurs**.
+
+Pour vous déconnecter : **Fichier → Déconnexion**
+
+---
+
+## Tableau de bord (📊)
+
+Le tableau de bord est le premier onglet affiché après la connexion.
+
+### Cartes de statistiques
+| Carte | Description |
+|---|---|
+| Produits | Nombre total de produits enregistrés |
+| Stock total | Somme de toutes les quantités en stock |
+| Valeur stock | Valeur totale du stock (prix × quantité) |
+| Alertes | Nombre de produits sous leur seuil d'alerte |
+| CA total | Chiffre d'affaires total toutes ventes confondues |
+
+### Graphiques
+- **Stock actuel** : barres horizontales par produit. Rouge = en alerte, Vert = OK
+- **Ventes récentes** : barres des 7 derniers jours de ventes
+- **Top 5 ventes** : camembert des 5 produits les plus vendus en quantité
+
+Cliquez sur **Rafraîchir** pour mettre à jour les données et les graphiques.
+
+---
+
+## Produits (📦)
 
 ### Ajouter un produit
-
-1. Cliquer sur **Ajouter**
-2. Remplir les champs :
-   - **Nom** : nom du produit (ex. : Café Arabica)
-   - **Référence** : identifiant unique (ex. : CAF001)
-   - **Quantité** : nombre entier ≥ 0
-   - **Prix unitaire** : nombre décimal (ex. : 8.50)
-   - **Catégorie** : choisir dans la liste ou saisir librement
-3. Cliquer sur **Valider**
-
-> ⚠️ La référence doit être unique. Un message d'erreur s'affiche si elle est déjà utilisée.
+1. Cliquez sur **Ajouter**
+2. Remplissez les champs : Nom, Catégorie, Prix, Quantité, Fournisseur, Seuil d'alerte
+3. Cliquez sur **Enregistrer**
 
 ### Modifier un produit
-
-1. Sélectionner un produit dans la liste
-2. Cliquer sur **Modifier**
-3. Mettre à jour les champs souhaités
-4. Cliquer sur **Valider**
+1. Sélectionnez un produit dans la liste
+2. Cliquez sur **Modifier**
+3. Mettez à jour les champs souhaités
+4. Cliquez sur **Enregistrer**
 
 ### Supprimer un produit
-
-1. Sélectionner un produit dans la liste
-2. Cliquer sur **Supprimer**
-3. Confirmer la suppression
+1. Sélectionnez un produit
+2. Cliquez sur **Supprimer**
+3. Confirmez la suppression
 
 ### Rechercher un produit
+Tapez un mot-clé dans le champ de recherche. La liste se filtre automatiquement.
 
-- Saisir un nom ou une référence dans la barre de recherche
-- La liste se filtre automatiquement
-
-### Trier la liste
-
-- Utiliser le menu déroulant **Trier par** : par catégorie ou par quantité
-
-### Importer / Exporter Excel
-
-- **Exporter** : crée un fichier `.xlsx` avec trois feuilles (Produits, Ventes, Fournisseurs)
-- **Importer** : charge la feuille "Produits" d'un fichier `.xlsx` existant
+### Alertes de stock
+Les produits dont la quantité est inférieure ou égale au seuil d'alerte apparaissent en **rouge**.
 
 ---
 
-## Onglet Ventes
+## Ventes (💰)
 
 ### Enregistrer une vente
+1. Cliquez sur **Ajouter une vente**
+2. Sélectionnez le produit
+3. Indiquez la quantité vendue
+4. Cliquez sur **Enregistrer**
 
-1. Sélectionner le produit dans la liste déroulante
-2. Saisir la quantité vendue
-3. Vérifier ou modifier la date (format `YYYY-MM-DD`)
-4. Cliquer sur **Enregistrer la vente**
+Le stock du produit est automatiquement mis à jour.
 
-> ⚠️ Si la quantité demandée dépasse le stock disponible, une erreur s'affiche et la vente est annulée.
-
-### Alerte stock faible
-
-Après chaque vente, si le stock restant est ≤ 5, un avertissement s'affiche automatiquement :
-
-```
-⚠️ Stock faible : Café Arabica (CAF001) — 3 unités restantes
-```
+### Historique
+La liste affiche toutes les ventes avec la date, le produit, la quantité, le prix unitaire et le total.
 
 ---
 
-## Onglet Rapports
+## Rapports (📋)
 
-### Rapport de stock
+L'onglet Rapports affiche un récapitulatif des ventes.
 
-- **Produits les plus en stock** : liste triée par quantité décroissante
-- **Produits les moins en stock** : liste triée par quantité croissante
+### Export Excel
+Cliquez sur **Exporter en Excel** pour générer un fichier `.xlsx` dans le dossier `exports/`.
 
-### Rapport des ventes
-
-- Chiffre d'affaires total
-- Produits les plus vendus (quantité cumulée)
-- Filtrage par période : saisir une date de début et une date de fin (`YYYY-MM-DD`)
-
-### Chiffre d'affaires par catégorie
-
-- Tableau récapitulatif du CA généré par chaque catégorie de produit
+### Export PDF
+Via le menu **Fichier** :
+- **Export PDF Inventaire** → génère `exports/inventaire.pdf`
+- **Export PDF Ventes** → génère `exports/ventes.pdf`
 
 ---
 
-## Onglet Fournisseurs
+## Fournisseurs (🏭)
 
 ### Ajouter un fournisseur
+1. Cliquez sur **Ajouter**
+2. Remplissez : Nom, Contact, Email, Téléphone
+3. Cliquez sur **Enregistrer**
 
-1. Cliquer sur **Ajouter**
-2. Remplir :
-   - **Nom** : nom du fournisseur
-   - **Contact** : email ou téléphone
-   - **Produits fournis** : références séparées par des virgules (ex. : CAF001, THE002)
-3. Cliquer sur **Valider**
-
-### Modifier / Supprimer un fournisseur
-
-- Sélectionner le fournisseur dans la liste
-- Cliquer sur **Modifier** ou **Supprimer**
+### Modifier / Supprimer
+Sélectionnez un fournisseur dans la liste puis cliquez sur **Modifier** ou **Supprimer**.
 
 ---
 
-## Persistance des données
+## Utilisateurs (👥) — Admin uniquement
 
-Les données sont sauvegardées automatiquement dans le dossier `data/` :
+Cet onglet n'est visible que pour les utilisateurs avec le rôle `admin`.
 
-| Fichier | Contenu |
+### Ajouter un utilisateur
+1. Remplissez le nom d'utilisateur et le mot de passe
+2. Sélectionnez le rôle : `admin` ou `readonly`
+3. Cliquez sur **Ajouter**
+
+### Supprimer un utilisateur
+1. Sélectionnez un utilisateur dans la liste
+2. Cliquez sur **Supprimer**
+3. Confirmez la suppression
+
+> L'utilisateur `admin` ne peut pas être supprimé.
+
+---
+
+## Thème sombre
+
+Via le menu **Affichage → Basculer thème sombre/clair**, vous pouvez passer de l'interface claire à l'interface sombre et inversement.
+
+---
+
+## Raccourcis clavier
+
+| Raccourci | Action |
 |---|---|
-| `data/products.json` | Liste des produits |
-| `data/sales.json` | Historique des ventes |
-| `data/suppliers.json` | Liste des fournisseurs |
+| Entrée (sur login) | Connexion |
 
-> ✅ Les données sont rechargées automatiquement à chaque démarrage.
+---
+
+## Sauvegarde
+
+Les données sont sauvegardées automatiquement à chaque modification dans le dossier `data/` :
+- `data/products.json`
+- `data/sales.json`
+- `data/suppliers.json`
+- `data/users.json`
+
+Pour sauvegarder manuellement, copiez le dossier `data/` vers un emplacement sûr.
 
 ---
 
 ## FAQ
 
-**Q : J'ai supprimé un produit par erreur, comment le récupérer ?**
-R : Les fichiers JSON sont dans `data/`. Si vous avez un backup, remplacez le fichier `products.json`.
+**Q : J'ai oublié mon mot de passe admin.**
+R : Supprimez le fichier `data/users.json`. Les comptes par défaut (`admin`/`admin` et `viewer`/`viewer`) seront recréés au prochain lancement.
 
-**Q : L'import Excel ne fonctionne pas.**
-R : Vérifiez que la première feuille du fichier s'appelle exactement **Produits** et que les colonnes sont dans l'ordre : Nom, Référence, Quantité, Prix unitaire, Catégorie.
+**Q : Le mode lecture seule m'empêche de modifier des données.**
+R : C'est normal. Contactez votre administrateur pour obtenir un compte `admin`.
 
-**Q : Comment changer le seuil d'alerte de stock faible ?**
-R : Modifier la valeur `low_stock_threshold` dans `storage.py`, ligne du constructeur `Storage.__init__`.
+**Q : Les accents ne s'affichent pas dans les PDF.**
+R : C'est une limitation connue de la police Helvetica dans `fpdf2`. Une correction est prévue en v1.2.0.
+
+**Q : Où sont sauvegardés les exports ?**
+R : Dans le dossier `exports/` à la racine du projet, créé automatiquement.
+
+**Q : Le thème sombre ne s'applique pas à tous les éléments.**
+R : C'est une limitation connue de tkinter pour certains widgets `ttk`. Une amélioration est prévue en v1.2.0.

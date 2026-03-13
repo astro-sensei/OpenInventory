@@ -1,202 +1,194 @@
-# Documentation Technique — OpenInventory v1.0.0
-
-## Stack technique
-
-| Composant | Technologie |
-|---|---|
-| Langage | Python 3.13 |
-| Interface graphique | Tkinter (ttk) |
-| Persistance | JSON (stdlib) |
-| Export/Import | openpyxl |
-| Modèles | dataclasses (stdlib) |
-| Dates | datetime (stdlib) |
+# Documentation Technique — OpenInventory v1.1.0
 
 ---
 
-## Module `models.py`
+## Environnement
 
-### `Product`
+| Élément | Valeur |
+|---|---|
+| Langage | Python 3.10+ |
+| Interface | Tkinter + ttk |
+| Graphiques | matplotlib 3.7+ |
+| Export Excel | openpyxl 3.1+ |
+| Export PDF | fpdf2 2.7+ |
+| Persistance | JSON |
+
+---
+
+## Modules
+
+### `models.py`
 
 ```python
 @dataclass
 class Product:
+    id: int
     name: str
-    reference: str
-    quantity: int
-    price: float
     category: str
-```
+    price: float
+    quantity: int
+    supplier: str
+    alert_threshold: int
 
-| Méthode | Retour | Description |
-|---|---|---|
-| `to_dict()` | `dict` | Sérialisation |
-| `from_dict(d)` | `Product` | Désérialisation |
-
-### `Sale`
-
-```python
 @dataclass
 class Sale:
-    reference: str
+    id: int
     product_name: str
     quantity: int
     unit_price: float
-    date: str
-    category: str
-```
+    total: float
+    date: str  # ISO 8601 : "YYYY-MM-DD HH:MM:SS"
 
-| Propriété/Méthode | Retour | Description |
-|---|---|---|
-| `total` | `float` | `quantity × unit_price` |
-| `to_dict()` | `dict` | Sérialisation |
-| `from_dict(d)` | `Sale` | Désérialisation |
-
-### `Supplier`
-
-```python
 @dataclass
 class Supplier:
+    id: int
     name: str
     contact: str
-    products: List[str]
+    email: str
+    phone: str
 ```
 
----
+### `storage.py`
 
-## Module `storage.py`
-
-### Classe `Storage`
-
-#### Constructeur
-
-```python
-Storage(
-    products_file="data/products.json",
-    sales_file="data/sales.json",
-    suppliers_file="data/suppliers.json",
-    low_stock_threshold=5
-)
-```
-
-#### Méthodes Produits
-
-| Méthode | Signature | Exception | Description |
-|---|---|---|---|
-| `add_product` | `(p: Product) -> None` | `ValueError` si ref dupliquée | Ajoute et sauvegarde |
-| `update_product` | `(ref: str, **kwargs) -> None` | `KeyError` si non trouvé | Met à jour les champs |
-| `delete_product` | `(ref: str) -> None` | `KeyError` si non trouvé | Supprime et sauvegarde |
-| `get_product` | `(ref: str) -> Product` | `KeyError` si non trouvé | Récupère par référence |
-| `search_products` | `(query: str) -> list[Product]` | — | Recherche nom ou ref |
-
-#### Méthodes Ventes
-
-| Méthode | Signature | Exception | Description |
-|---|---|---|---|
-| `record_sale` | `(ref: str, qty: int, date: str) -> Sale` | `ValueError` si stock insuffisant | Enregistre vente + màj stock |
-| `get_sales_report` | `() -> dict` | — | Stats globales des ventes |
-
-#### Méthodes Fournisseurs
-
-| Méthode | Signature | Exception | Description |
-|---|---|---|---|
-| `add_supplier` | `(s: Supplier) -> None` | `ValueError` si nom dupliqué | Ajoute fournisseur |
-| `update_supplier` | `(name: str, **kwargs) -> None` | `KeyError` si non trouvé | Met à jour |
-| `delete_supplier` | `(name: str) -> None` | `KeyError` si non trouvé | Supprime |
-
-#### Import / Export Excel
-
-| Méthode | Signature | Description |
+| Méthode | Retour | Description |
 |---|---|---|
-| `export_excel` | `(path: str) -> None` | Exporte produits, ventes, fournisseurs dans 3 feuilles |
-| `import_excel` | `(path: str) -> None` | Importe la feuille "Produits" |
+| `get_products()` | `list[Product]` | Charge les produits depuis JSON |
+| `save_products(products)` | `None` | Sauvegarde la liste de produits |
+| `get_sales()` | `list[Sale]` | Charge les ventes depuis JSON |
+| `save_sales(sales)` | `None` | Sauvegarde la liste de ventes |
+| `get_suppliers()` | `list[Supplier]` | Charge les fournisseurs depuis JSON |
+| `save_suppliers(suppliers)` | `None` | Sauvegarde la liste de fournisseurs |
+
+### `user_manager.py`
+
+| Méthode | Retour | Description |
+|---|---|---|
+| `authenticate(username, password)` | `bool` | Vérifie les identifiants (SHA-256) |
+| `is_admin()` | `bool` | Retourne True si le rôle est `admin` |
+| `add_user(username, password, role)` | `bool` | Ajoute un utilisateur |
+| `delete_user(username)` | `bool` | Supprime un utilisateur (sauf `admin`) |
+| `list_users()` | `list[dict]` | Liste tous les utilisateurs avec leur rôle |
+| `load()` | `None` | Charge depuis `data/users.json` |
+| `save()` | `None` | Sauvegarde dans `data/users.json` |
+
+### `gui/theme.py`
+
+| Méthode | Retour | Description |
+|---|---|---|
+| `get()` | `dict` | Retourne le thème actif |
+| `toggle()` | `dict` | Bascule entre clair et sombre |
+| `apply(widget, theme)` | `None` | Applique récursivement le thème |
+
+Clés des dictionnaires de thème : `bg`, `fg`, `entry_bg`, `entry_fg`, `button_bg`, `button_fg`, `tree_bg`, `tree_fg`, `tree_select`
+
+### `gui/pdf_export.py`
+
+| Méthode | Retour | Description |
+|---|---|---|
+| `PDFExporter.export_inventory(products, filepath)` | `str` | Génère le PDF inventaire, retourne le chemin |
+| `PDFExporter.export_sales(sales, filepath)` | `str` | Génère le PDF ventes, retourne le chemin |
+
+Chemins par défaut : `exports/inventaire.pdf`, `exports/ventes.pdf`
+
+### `gui/dashboard_tab.py`
+
+| Composant | Description |
+|---|---|
+| Cartes KPI | 5 `tk.Frame` avec label et valeur en gras |
+| Graphique stock | `barh` matplotlib, rouge si `quantity <= alert_threshold` |
+| Graphique ventes | `bar` matplotlib des 7 derniers jours |
+| Camembert | `pie` matplotlib du Top 5 produits vendus |
+| Canvas | `FigureCanvasTkAgg` intégré dans le frame |
 
 ---
 
 ## Format des fichiers JSON
 
-### `products.json`
-
+### `data/products.json`
 ```json
 [
   {
-    "name": "Café Arabica",
-    "reference": "CAF001",
-    "quantity": 120,
-    "price": 8.50,
-    "category": "Alimentaire"
+    "id": 1,
+    "name": "Produit A",
+    "category": "Catégorie",
+    "price": 9.99,
+    "quantity": 50,
+    "supplier": "Fournisseur X",
+    "alert_threshold": 10
   }
 ]
 ```
 
-### `sales.json`
-
+### `data/sales.json`
 ```json
 [
   {
-    "reference": "CAF001",
-    "product_name": "Café Arabica",
-    "quantity": 10,
-    "unit_price": 8.50,
-    "date": "2026-01-15",
-    "category": "Alimentaire"
+    "id": 1,
+    "product_name": "Produit A",
+    "quantity": 3,
+    "unit_price": 9.99,
+    "total": 29.97,
+    "date": "2026-01-20 14:32:00"
   }
 ]
 ```
 
-### `suppliers.json`
-
+### `data/users.json`
 ```json
-[
-  {
-    "name": "FournisseurPro",
-    "contact": "contact@fournisseurpro.fr",
-    "products": ["CAF001", "THE002"]
+{
+  "admin": {
+    "password": "<sha256>",
+    "role": "admin"
+  },
+  "viewer": {
+    "password": "<sha256>",
+    "role": "readonly"
   }
-]
+}
 ```
 
 ---
 
-## Format du fichier Excel exporté
+## Format du fichier Excel (export rapports)
 
-| Feuille | Colonnes |
+| Colonne | Type | Description |
+|---|---|---|
+| Date | string | Date de la vente |
+| Produit | string | Nom du produit |
+| Quantité | int | Quantité vendue |
+| Prix unitaire | float | Prix unitaire |
+| Total | float | Quantité × Prix unitaire |
+
+---
+
+## Sécurité
+
+- Les mots de passe ne sont jamais stockés en clair
+- Hash : `hashlib.sha256(password.encode()).hexdigest()`
+- L'utilisateur `admin` ne peut pas être supprimé
+- En mode `readonly` : tous les boutons d'écriture sont désactivés via `widget.configure(state="disabled")`
+
+---
+
+## Gestion des erreurs
+
+| Situation | Comportement |
 |---|---|
-| Produits | Nom, Référence, Quantité, Prix unitaire, Catégorie |
-| Ventes | Référence, Produit, Quantité, Prix unitaire, Total, Date, Catégorie |
-| Fournisseurs | Nom, Contact, Produits fournis |
+| JSON absent | Création automatique avec liste vide |
+| `users.json` absent | Création avec comptes `admin`/`viewer` par défaut |
+| Identifiants incorrects | `messagebox.showerror` dans `LoginWindow` |
+| Suppression de `admin` | Retourne `False`, pas de modification |
+| Export PDF échoué | `messagebox.showerror` avec message de l'exception |
+| Produit en alerte | Fond rouge dans le `Treeview` de `ProductsTab` |
 
 ---
 
-## Seuil d'alerte stock faible
+## Roadmap
 
-Le seuil par défaut est `5`. Il est configurable dans `Storage.__init__()`.
-
-```mermaid
-flowchart LR
-    A[Vente enregistrée] --> B{quantité produit ≤ seuil ?}
-    B -- Oui --> C[messagebox.showwarning affiché]
-    B -- Non --> D[Aucune alerte]
-```
-
----
-
-## Diagramme de séquence — Import Excel
-
-```mermaid
-sequenceDiagram
-    participant U as Utilisateur
-    participant GUI as ProductsTab
-    participant S as Storage
-    participant XL as Fichier .xlsx
-
-    U->>GUI: Clic "Importer Excel"
-    GUI->>GUI: filedialog.askopenfilename()
-    GUI->>S: import_excel(path)
-    S->>XL: Lecture feuille "Produits"
-    loop Chaque ligne
-        S->>S: Créer Product + add_product()
-    end
-    S->>S: Sauvegarde products.json
-    S-->>GUI: OK
-    GUI-->>U: Refresh liste + confirmation
-```
+| Version | Fonctionnalité |
+|---|---|
+| v1.2.0 | Import CSV |
+| v1.2.0 | Historique des prix |
+| v1.2.0 | Filtres avancés |
+| v1.2.0 | Graphiques dans les PDF |
+| v1.2.0 | Expiration de session |

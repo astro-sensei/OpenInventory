@@ -53,3 +53,6 @@ data/
 # Release
 release/
 *.md
+
+# Generateur de data de test
+generate_demo_data.py

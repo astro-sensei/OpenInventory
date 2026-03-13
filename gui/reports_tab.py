@@ -42,8 +42,8 @@ class ReportsTab(ttk.Frame):
             self._write("Aucun produit en stock.")
             return
         self._write(
-            f"📉 Stock le plus bas :\n   {mn.name} (réf: {mn.reference}) — {mn.quantity} unités\n\n"
-            f"📈 Stock le plus haut :\n   {mx.name} (réf: {mx.reference}) — {mx.quantity} unités"
+            f"Stock le plus bas :\n   {mn.name} (réf: {mn.reference}) — {mn.quantity} unités\n\n"
+            f"Stock le plus haut :\n   {mx.name} (réf: {mx.reference}) — {mx.quantity} unités"
         )
 
     def _top_sold(self):
@@ -52,7 +52,7 @@ class ReportsTab(ttk.Frame):
         if not top:
             self._write("Aucune vente enregistrée pour cette période.")
             return
-        lines = ["🏆 Produits les plus vendus :\n"]
+        lines = ["Produits les plus vendus :\n"]
         for i, (name, qty) in enumerate(top, 1):
             lines.append(f"   {i}. {name} — {qty} unité(s)")
         self._write("\n".join(lines))
@@ -63,7 +63,7 @@ class ReportsTab(ttk.Frame):
         if not rev:
             self._write("Aucune donnée.")
             return
-        lines = ["💰 Chiffre d'affaires par catégorie :\n"]
+        lines = ["Chiffre d'affaires par catégorie :\n"]
         for cat, total in sorted(rev.items(), key=lambda x: -x[1]):
             lines.append(f"   {cat or 'N/A'} : {total:.2f} €")
         lines.append(f"\n   TOTAL : {sum(rev.values()):.2f} €")
@@ -71,14 +71,14 @@ class ReportsTab(ttk.Frame):
 
     def _total_revenue(self):
         total = self.storage.total_revenue()
-        self._write(f"💵 Chiffre d'affaires total : {total:.2f} €")
+        self._write(f"Chiffre d'affaires total : {total:.2f} €")
 
     def _low_stock(self):
         low = self.storage.low_stock()
         if not low:
-            self._write("✅ Tous les produits ont un stock suffisant.")
+            self._write("Tous les produits ont un stock suffisant.")
             return
-        lines = ["⚠ Produits avec stock faible (≤ 5) :\n"]
+        lines = ["Produits avec stock faible (≤ 5) :\n"]
         for p in low:
             lines.append(f"   • {p.name} (réf: {p.reference}) — {p.quantity} unité(s)")
         self._write("\n".join(lines))

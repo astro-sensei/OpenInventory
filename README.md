@@ -1,50 +1,38 @@
-# OpenInventory
+<center>
+<h1 id="openinventory">OpenInventory</h1>
+<p><img src="https://img.shields.io/badge/Python-3.13-blue?logo=python" alt="Python">
+<img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+<img src="https://img.shields.io/badge/Version-1.1.0-orange" alt="Version">
+<img src="https://img.shields.io/badge/Status-Stable-brightgreen" alt="Status"></p>
+</center>
 
-![Python](https://img.shields.io/badge/Python-3.13-blue?logo=python)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Version](https://img.shields.io/badge/Version-1.0.0-orange)
-![Status](https://img.shields.io/badge/Status-Stable-brightgreen)
-
-> Application de gestion des stocks pour petites entreprises — Interface graphique Tkinter, persistance JSON, export Excel.
+Logiciel de gestion d'inventaire de bureau, open-source, développé en Python avec une interface graphique Tkinter.
 
 ---
 
 ## Fonctionnalités
 
-### Gestion des produits
-- Ajouter, modifier, supprimer un produit (nom, référence unique, quantité, prix, catégorie)
-- Afficher et trier par catégorie ou quantité
-- Rechercher par nom ou référence
+### v1.0.0
+- 📦 Gestion des produits (ajout, modification, suppression, recherche)
+- 🔴 Alertes de stock automatiques avec seuil configurable
+- 💰 Enregistrement et historique des ventes
+- 📋 Rapports avec export Excel
+- 🏭 Gestion des fournisseurs
+- 💾 Persistance des données en JSON
 
-### Suivi des ventes
-- Enregistrer une vente avec mise à jour automatique du stock
-- Rapport des ventes : produits les plus vendus, chiffre d'affaires total
-
-### Rapports et statistiques
-- Produits les plus/moins en stock
-- Ventes par période
-- Chiffre d'affaires par catégorie
-
-### Persistance
-- Sauvegarde automatique en JSON après chaque opération
-- Import / Export Excel (`.xlsx`) via `openpyxl`
-
-### Alertes
-- Notification automatique lorsque le stock d'un produit passe sous le seuil (≤ 5)
-
-### Gestion des fournisseurs
-- Ajouter, modifier, supprimer un fournisseur (nom, contact, produits fournis)
+### v1.1.0
+- 📊 Tableau de bord avec graphiques en temps réel (matplotlib)
+- 👥 Système de rôles : `admin` / `readonly`
+- 🔐 Écran de connexion avec mots de passe hashés (SHA-256)
+- 📄 Export PDF de l'inventaire et des ventes
+- 🌙 Thème sombre / clair basculable
 
 ---
 
 ## Prérequis
 
 - Python 3.10+
-- `openpyxl`
-
-```bash
-pip install openpyxl
-```
+- pip
 
 ---
 
@@ -53,9 +41,26 @@ pip install openpyxl
 ```bash
 git clone https://github.com/astro-sensei/OpenInventory.git
 cd OpenInventory
-pip install openpyxl
+pip install -r requirements.txt
 python main.py
 ```
+
+---
+
+## Démarrage rapide
+
+1. Lancez `python main.py`
+2. Connectez-vous avec `admin` / `admin`
+3. Explorez le tableau de bord, ajoutez des produits et enregistrez des ventes
+
+---
+
+## Comptes par défaut
+
+| Utilisateur | Mot de passe | Rôle |
+|---|---|---|
+| admin | admin | Administrateur (accès complet) |
+| viewer | viewer | Lecture seule |
 
 ---
 
@@ -66,31 +71,40 @@ OpenInventory/
 ├── main.py
 ├── models.py
 ├── storage.py
+├── user_manager.py
+├── gui/
+│   ├── __init__.py
+│   ├── app.py
+│   ├── dashboard_tab.py
+│   ├── dialogs.py
+│   ├── login_window.py
+│   ├── pdf_export.py
+│   ├── products_tab.py
+│   ├── reports_tab.py
+│   ├── sales_tab.py
+│   ├── suppliers_tab.py
+│   ├── theme.py
+│   └── users_tab.py
 ├── data/
-│   ├── products.json
-│   ├── sales.json
-│   └── suppliers.json
-└── gui/
-    ├── app.py
-    ├── products_tab.py
-    ├── sales_tab.py
-    ├── reports_tab.py
-    ├── suppliers_tab.py
-    └── dialogs.py
+└── exports/
 ```
 
 ---
 
-## Démarrage rapide
+## Dépendances
 
-1. Lancer l'application : `python main.py`
-2. Onglet **Produits** → Ajouter vos produits
-3. Onglet **Ventes** → Enregistrer une vente
-4. Onglet **Rapports** → Visualiser les statistiques
-5. Onglet **Fournisseurs** → Gérer vos fournisseurs
+| Bibliothèque | Usage |
+|---|---|
+| `openpyxl` | Export Excel |
+| `matplotlib` | Graphiques du tableau de bord |
+| `fpdf2` | Export PDF |
 
 ---
 
 ## Licence
 
-Distribué sous licence MIT. Voir [LICENSE](LICENSE) pour plus d'informations.
+MIT — voir [LICENSE](LICENSE)
+
+---
+
+*Dépôt : https://github.com/astro-sensei/OpenInventory*
