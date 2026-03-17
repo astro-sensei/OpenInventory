@@ -56,3 +56,4 @@ release/
 
 # Generateur de data de test
 generate_demo_data.py
+*.ipynb
